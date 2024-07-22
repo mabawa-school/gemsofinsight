@@ -1,0 +1,98 @@
+<nav class="w-full h-23 pt-4 pb-4 top-0 bg-white shadow z-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center">
+        <%= link_to root_path do %>
+          <%= image_tag 'logo.png', class: 'h-auto w-64' %>
+        <% end %>
+      </div>
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-4">
+          <%= link_to 'Home', root_path, class: "text-sky-500 hover:text-sky-900 px-3 py-2 rounded-md text-xl font-medium text-decoration-none" %>
+          <%= link_to 'Shop', categories_path, class: "text-sky-500 hover:text-sky-900 px-3 py-2 rounded-md text-xl font-medium text-decoration-none" %>
+          <%= link_to 'Blogs', blog_categories_path, class: "text-sky-500 hover:text-sky-900 px-3 py-2 rounded-md text-xl font-medium text-decoration-none" %>
+          <%= link_to 'Products', products_path, class: "text-sky-500 hover:text-sky-900 px-3 py-2 rounded-md text-xl font-medium text-decoration-none" %>
+          <%= link_to cart_path(@current_cart&.secret_id), class: "text-sky-500 hover:text-sky-900 focus:outline-none relative flex items-center" do %>
+            <i class="fas fa-shopping-cart text-3xl"></i> <!-- Adjust icon size here -->
+            <% if @current_cart&.cart_items&.any? %>
+              <div class="bg-sky-500 px-2 py-1 mb-6 text-xs text-grey-100 rounded-full">
+                <%= @current_cart.cart_items.count %>
+              </div>
+            <% end %>
+          <% end %>
+      </div>
+      </div>
+      <div class="relative md:hidden flex items-center">
+        <%= link_to cart_path(@current_cart&.secret_id), class: "text-sky-500 hover:text-sky-900 focus:outline-none relative flex items-center" do %>
+          <i class="fas fa-shopping-cart text-3xl"></i> <!-- Adjust icon size here -->
+          <% if @current_cart&.cart_items&.any? %>
+            <div class="bg-sky-500 px-2 py-1 mb-6 text-xs text-grey-100 rounded-full">
+              <%= @current_cart.cart_items.count %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Sticky Bottom Navbar for Mobile -->
+<div class="fixed bottom-0 left-0 right-0 w-full bg-white shadow z-10 md:hidden tab-bar">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between py-2">
+      <%= link_to root_path, class: "text-sky-500 hover:text-sky-900 flex flex-col items-center" do %>
+        <i class="fas fa-home"></i>
+        <span class="text-xs">Home</span>
+      <% end %>
+      <%= link_to categories_path, class: "text-sky-500 hover:text-sky-900 flex flex-col items-center" do %>
+        <i class="fas fa-list"></i>
+        <span class="text-xs">Categories</span>
+      <% end %>
+      <%= link_to products_path, class: "text-sky-500 hover:text-sky-900 flex flex-col items-center" do %>
+        <i class="fas fa-box-open"></i>
+        <span class="text-xs">Products</span>
+      <% end %>
+      <%= link_to blog_categories_path, class: "text-sky-500 hover:text-sky-900 flex flex-col items-center" do %>
+        <i class="fas fa-blog"></i>
+        <span class="text-xs">Blogs</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- WhatsApp and Back to Top Buttons -->
+<div class="fixed bottom-0 left-0 right-0 w-full bg-none flex justify-between px-4 py-2 z-20 md:hidden mb-12">
+  <a href="whatsapp://send?phone=+254795029654" class="bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition duration-300">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  <a href="#" id="back-to-top" class="bg-gray-500 text-white p-3 rounded-full hover:bg-gray-600 transition duration-300">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+</div>
+
+
+<script>
+  // Back to top functionality
+  document.getElementById('back-to-top').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabBar = document.querySelector('.tab-bar');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.intersectionRatio < 1) {
+                tabBar.classList.add('tab-bar-hidden');
+            } else {
+                tabBar.classList.remove('tab-bar-hidden');
+            }
+        });
+    }, { threshold: [1] });
+
+    observer.observe(document.querySelector('.cart-container'));
+  });
+</script>
+
+
+

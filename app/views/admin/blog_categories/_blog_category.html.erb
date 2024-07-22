@@ -1,0 +1,18 @@
+<div id="<%= dom_id blog_category %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Name:</strong>
+    <%= blog_category.name %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Description:</strong>
+    <%= blog_category.description %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this blog category", [:admin, blog_category], class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to "Edit this blog category", edit_admin_blog_category_path(blog_category), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+
+</div>

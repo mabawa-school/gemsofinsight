@@ -1,0 +1,22 @@
+<div id="<%= dom_id article %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Blog category:</strong>
+    <%= article.blog_category_id %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Title:</strong>
+    <%= article.title %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Body:</strong>
+    <%= article.body %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Image:</strong>
+    <%= link_to article.image.filename, article.image if article.image.attached? %>
+  </p>
+
+</div>

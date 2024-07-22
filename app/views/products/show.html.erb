@@ -1,0 +1,67 @@
+<h1 class="hidden">Product show page</h1>
+<div class="container mx-auto p-4">
+  <!-- Back to All Products Button -->
+  <div class="max-w-7xl w-full mx-auto px-10 mb-2"> 
+    <%= link_to "Products", products_path, class: "text-xl text-gray-100 hover:text-gray-200" %>
+    <%= link_to "> #{@product.category.name}", @product.category, class: "text-xl text-gray-100" if @product.category %>
+    <%= link_to "> #{@product.name}", @product, class: "text-xl text-gray-100" %>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-10">
+    <!-- Product Image and Thumbnails -->
+    <div class="flex flex-col items-center lg:w-1/2">
+      <!-- Main Image -->
+      <div class="w-full max-w-md mb-4">
+        <% if @product.images.attached? %>
+          <%= image_tag url_for(@product.images.first), class: 'w-full h-auto object-cover' %>
+        <% else %>
+          <%= image_tag 'http://via.placeholder.com/512', class: 'w-full h-auto object-cover' %>
+        <% end %>
+      </div>
+      <!-- Thumbnails -->
+      <div class="flex gap-2 overflow-x-auto">
+        <% @product.images.each do |image| %>
+          <%= image_tag url_for(image), class: 'w-24 h-24 object-cover rounded cursor-pointer hover:shadow-lg transition' %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div data-controller="products" data-products-product-value="<%= @product.to_json %>" class="flex flex-col items-start lg:w-1/2">
+      <h1 class="font-bold text-4xl text-purple-900"><%= @product.name %></h1>
+      <p class="text-gray-700 mt-4 text-lg"><%= @product.description %></p>
+      <p class="text-2xl text-purple-700 mt-4">Ksh <%= number_with_delimiter(@product.price, delimiter: ',') %></p>
+
+      <!-- Size Selection -->
+      <div class="my-8">
+        <p class="uppercase text-lg text-gray-900">Size</p>
+        <div class="flex gap-2 mt-2">
+          <% @product.stocks.each do |stock| %>
+            <% if stock.amount > 0 %>
+              <button data-action="click->products#selectSize" value="<%= stock.size %>" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                <%= stock.size %>
+              </button>
+            <% else %> 
+              <button disabled value="<%= stock.size %>" class="disabled:bg-gray-400 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                <%= stock.size %>
+              </button>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div id="selected-size"></div>
+
+      <!-- Add to Cart Button -->
+      <div id="add-to-cart" class="w-full flex">
+        <% if @current_cart && @current_cart.products.where(id: @product.id).any? %>
+          <div class="rounded-lg font-semibold p-4 text-center text-xl bg-gray-400 hover:bg-gray-500 w-full">
+            Already in Cart
+          </div>
+        <% else %>
+          <%= link_to "Add To Cart", carts_path(product_id: @product.id), class: "rounded-lg font-semibold p-4 text-center text-xl bg-gray-400 hover:bg-gray-500 w-full",
+              data: { turbo_method: "post" } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

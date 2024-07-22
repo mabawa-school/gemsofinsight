@@ -1,0 +1,33 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-4xl font-bold text-center mb-8">Products</h1>
+  
+  <div class="flex items-center justify-center mb-4">
+    <div class="flex flex-col md:flex-row items-center justify-center w-full md:w-auto">
+      <%= form_with url: products_path, method: :get, class: "flex flex-col md:flex-row items-center" do |form| %>
+        <div class="flex flex-col md:flex-row w-full items-center">
+          <%= form.text_field :query, placeholder: "Search Product", class: "rounded border-gray-300 text-gray-800 px-4 py-2 focus:ring-2 focus:ring-gray-500" %>
+          <div class="flex space-x-4 mt-2 md:mt-0 md:ml-2">
+            <%= form.submit "Submit", class: "cursor-pointer bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded focus:ring-2 focus:ring-gray-500 w-full md:w-32" %>
+            <%= form.submit "Clear", class: "cursor-pointer bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded focus:ring-2 focus:ring-gray-500 w-full md:w-32" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <% @products.each do |product| %>
+      <div class="flex flex-col items-center text-center bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
+        <%= link_to product_path(product), class: "block w-32 h-32 rounded-full overflow-hidden" do %>
+          <% if product.images.attached? %>
+            <%= image_tag product.images.first, class: "w-full h-full object-cover" %>
+          <% else %>
+            <%= image_tag "placeholder.jpg", class: "w-full h-full object-cover" %>
+          <% end %>
+        <% end %>
+        <h2 class="mt-4 text-xl font-semibold text-gray-800"><%= product.name %></h2>
+        <p class="mt-2 text-gray-600">Ksh <%= number_with_delimiter(product.price, delimiter: ',') %></p>
+      </div>
+    <% end %>
+  </div>
+</div>

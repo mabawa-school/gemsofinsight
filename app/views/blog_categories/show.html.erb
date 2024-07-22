@@ -1,0 +1,43 @@
+<div class="container mt-5 mx-auto px-4">
+
+  <h1>Category Show Page</h1>
+
+  <div class="max-w-7xl w-full mx-auto px-10 mb-2"> 
+      <%= link_to "< Back to Blog Categories", @blog_category, class: "text-xl text-gray-100" if @blog_category %>
+  </div>
+
+  <div class="min-h-screen flex justify-center">
+    <div class="flex flex-wrap flex-col mt-6">
+      <h2 class="text-lg text-gray-800">Search</h2>
+    </div>
+
+    <div class="w-full">
+      <% if @blogs.empty? %>
+        <p class="text-2xl text-left text-gray-800">No blogs found</p>
+      <% else %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <% @blogs.each do |blog| %>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+              <% if blog.image.attached? %>
+                <%= image_tag(url_for(blog.image), class: "w-full h-44 object-cover") %>
+              <% else %>
+                <%= image_tag("http://via.placeholder.com/512", class: "w-full h-44 object-cover") %>
+              <% end %>
+              <div class="p-6">
+                <a href="<%= blog_path(blog) %>" class="block">
+                  <h3 class="text-xl font-bold text-gray-800 mb-2"><%= blog.title %></h3>
+                  <div class="text-gray-700 text-base">
+                    <%= truncate(strip_tags(blog.content.body.to_plain_text), length: 100) %>
+                    <% if blog.content.body.to_plain_text.length > 100 %>
+                      <%= link_to "Read More", blog_path(blog), class: "text-blue-600 hover:underline" %>
+                    <% end %>
+                  </div>
+                </a>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

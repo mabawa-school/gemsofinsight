@@ -1,0 +1,25 @@
+<%= form_with(model: [:admin, @blog_category, admin_blog], class: "contents") do |form| %>
+  <div class="my-5">
+    <%= form.hidden_field :blog_category_id, value: @blog_category.id %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :title %>
+    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :image %>
+    <%= form.file_field :image, rows: 4, class: "block shadow rounded-md border border-sky-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :content %>
+    <%= form.text_area :content, rows: 4, class: "tinymce block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mb-8 mt-2 w-full" %>
+    <%= tinymce %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>

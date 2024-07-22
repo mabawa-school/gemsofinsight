@@ -1,4 +1,16 @@
 Rails.application.routes.draw do
+  mount Ckeditor::Engine => '/ckeditor'
+  namespace :admin do
+    resources :articles
+    resources :blog_categories do
+      resources :blogs
+    end
+    resources :orders
+    resources :products do
+      resources :stocks
+    end
+      resources :categories
+  end
   devise_for :admins
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -12,4 +24,21 @@ Rails.application.routes.draw do
   authenticated :admin_user do
     root to: "admin#index", as: :admin_root
   end
+
+  resources :categories, only: [:show, :index]
+  resources :products, only: [:show, :index]
+  resources :blog_categories, only: [:index, :show]
+  resources :blogs, only: [:show]
+  resources :carts, only: [:create, :show, :destroy] do
+    collection do
+      post 'update_quantity'
+    end
+  end
+
+  get "admin" => "admin#index"
+  # get "cart" => "carts#show"
+  post "checkout" => "checkouts#create"
+  get "success" => "checkouts#success"
+  get "cancel" => "checkouts#cancel"
+  post "webhooks" => "webhooks#stripe"
 end

@@ -1,3 +1,203 @@
-<h1>Home</h1>
+<div id="carouselDesktop" class="carousel slide text-center container-fluid d-none d-md-block" data-bs-ride="carousel" style="height: 80vh;">
+  <div class="carousel-inner h-100">
+    <% @desktop_carousel_images.each_with_index do |image_name, index| %>
+      <div class="carousel-item <%= index == 0 ? 'active' : '' %> h-100">
+        <%= image_tag(asset_path("carousel/#{image_name}"), class: "d-block w-100") %>
+        <div class="carousel-caption d-none d-md-block">
+          <h1 class="text-5xl font-extrabold mb-4 text-orange-400	">Welcome to Gems of Insight</h1>
+          <p class="text-xl mb-8 text-sky-500">Your one-stop shop for all your Natural Remedies!</p>
+          <%= link_to "Shop Now", categories_path, class: "btn btn-primary btn-lg text-decoration-none" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselDesktop" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselDesktop" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
 
-<%# <%= icon('fa-brands', 'font-awesome')%>
+<div id="carouselMobile" class="carousel slide text-center container-fluid d-block d-md-none" data-bs-ride="carousel">
+  <div class="carousel-inner h-100">
+    <% @mobile_carousel_images.each_with_index do |image_name, index| %>
+      <div class="carousel-item <%= index == 0 ? 'active' : '' %> h-100">
+        <%= image_tag(asset_path("carousel/#{image_name}"), class: "d-block w-100") %>
+        <div class="d-block text-center mt-3 position-absolute bottom-0 start-50 translate-middle-x p-4">
+          <%= link_to "Shop Now", categories_path, class: "btn btn-primary btn-lg text-decoration-none" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselMobile" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselMobile" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+<!-- Main Content -->
+<div class="max-w-7xl mx-auto py-1 px-2 sm:px-2 lg:px-4">
+  
+  <!-- Featured Products Section -->
+  <h2 class="text-3xl font-extrabold text-green-800 text-center mt-4 mb-6">Featured Products</h2>
+  <div class="flex mt-4 flex-col md:flex-row items-center justify-center w-full">
+    <%= form_with url: products_path, method: :get, class: "flex" do |form| %>
+      <%= form.text_field :query, placeholder: "Search Product", class: "rounded border-gray-500 text-gray-800" %>
+      <%= form.submit "Submit", class: "cursor-pointer bg-gray-500 ml-2 hover:bg-gray-600 text-white py-2 px-4 rounded" %>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+    <% @main_products.each do |product| %>
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <%= link_to product_path(product), class: "block text-decoration-none" do %>
+          <% if product.images.attached? %>
+            <%= image_tag(url_for(product.images.first), class: "w-full h-64 object-cover") %>
+          <% else %>
+            <%= image_tag("http://via.placeholder.com/512", class: "w-full h-64 object-cover") %>
+          <% end %>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2"><%= product.name %></h3>
+            <p class="text-gray-700 text-base"><%= product.description.truncate(100) %></p>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-gray-700 font-medium">Ksh <%= number_with_delimiter(product.price, delimiter: ',') %></span>
+            </div>
+          </div>
+        <% end %>
+        <div class="p-6 pt-0">
+          <%= button_to 'Add to cart', product_path(product), method: :post, class: "px-4 py-2 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition duration-200" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Categories Section -->
+  <h2 class="text-3xl font-extrabold text-green-800 text-center mt-12 mb-6">Categories</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <% @main_categories.each do |category| %>
+      <%= link_to category_path(category), class: "flex flex-col items-center text-decoration-none" do %>
+        <% if category.image.present? %>
+          <%= image_tag(category.image, class: "block w-24 h-24 rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out") %>
+        <% else %>
+          <%= image_tag("http://via.placeholder.com/256", class: "w-60 h-60 object-cover mb-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out") %>
+        <% end %>
+        <h2 class="text-gray-900 font-medium text-lg text-center text-decoration-none"><%= category.name %></h2>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- Blog Categories Section -->
+  <h2 class="text-3xl font-extrabold text-green-800 text-center mt-12 mb-6">Blog Categories</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-decoration-none">
+    <% @main_blog_categories.each do |blog_category| %>
+      <%= link_to blog_category_path(blog_category), class: "flex flex-col items-center text-decoration-none" do %>
+        <% if blog_category.image.present? %>
+          <%= image_tag(blog_category.image, class: "w-60 h-60 object-cover mb-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out") %>
+        <% else %>
+          <%= image_tag("http://via.placeholder.com/256", class: "w-60 h-60 object-cover mb-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out") %>
+        <% end %>
+        <h2 class="text-gray-900 font-medium text-lg text-center text-decoration-none"><%= blog_category.name %></h2>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="bg-sky-100 py-20 my-10">
+  <div class="container mx-auto px-6">
+    <div class="flex justify-center text-3xl font-bold text-gray-800 text-center">
+      Why Us?
+    </div>
+    <div class="container px-5 py-12 mx-auto">
+      <div class="flex flex-wrap text-center justify-center">
+        <div class="p-4 md:w-1/4 sm:w-1/2">
+          <div class="px-4 py-6 transform transition duration-500 hover:scale-110">
+            <div class="flex justify-center">
+              <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-natural-medicine-alternative-medicine-flaticons-flat-flat-icons-2.png" alt="external-natural-medicine-alternative-medicine-flaticons-flat-flat-icons-2" class="w-50 mb-3" alt="Natural and Organic">
+            </div>
+            <h2 class="title-font font-regular text-2xl text-gray-900">100% Natural and Organic</h2>
+            <p class="text-gray-700">Our products are made from the finest natural ingredients, ensuring you get the best quality remedies.</p>
+          </div>
+        </div>
+
+        <div class="p-4 md:w-1/4 sm:w-1/2">
+          <div class="px-4 py-6 transform transition duration-500 hover:scale-110">
+            <div class="flex justify-center">
+              <img src="https://image2.jdomni.in/banner/13062021/3E/57/E8/1D6E23DD7E12571705CAC761E7_1623567977295.png?output-format=webp" class="w-32 mb-3" alt="Affordable Prices">
+            </div>
+            <h2 class="title-font font-regular text-2xl text-gray-900">Affordable Prices</h2>
+            <p class="text-gray-700">We offer competitive prices without compromising on quality.</p>
+          </div>
+        </div>
+
+        <div class="p-4 md:w-1/4 sm:w-1/2">
+          <div class="px-4 py-6 transform transition duration-500 hover:scale-110">
+            <div class="flex justify-center">
+              <img src="https://image3.jdomni.in/banner/13062021/16/7E/7E/5A9920439E52EF309F27B43EEB_1623568010437.png?output-format=webp" class="w-32 mb-3" alt="Fast Shipping">
+            </div>
+            <h2 class="title-font font-regular text-2xl text-gray-900">Fast Shipping</h2>
+            <p class="text-gray-700">Get your remedies delivered quickly and efficiently right to your doorstep.</p>
+          </div>
+        </div>
+
+        <div class="p-4 md:w-1/4 sm:w-1/2">
+          <div class="px-4 py-6 transform transition duration-500 hover:scale-110">
+            <div class="flex justify-center">
+              <img src="https://image3.jdomni.in/banner/13062021/EB/99/EE/8B46027500E987A5142ECC1CE1_1623567959360.png?output-format=webp" class="w-32 mb-3" alt="Expert Knowledge">
+            </div>
+            <h2 class="title-font font-regular text-2xl text-gray-900">Expert Knowledge</h2>
+            <p class="text-gray-700">Benefit from our extensive experience and knowledge in natural remedies.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Us Section -->
+<div class="bg-sky-500 text-white my-10 text-center py-20">
+  <h2 class="text-3xl font-bold mb-6">Contact Us</h2>
+  <p class="mb-8">If you have any inquiries or need assistance, please reach out to us.</p>
+  <form action="https://formspree.io/f/mpwazrgv" method="POST" class="flex flex-col items-center">
+    <label class="w-full max-w-md mb-4">
+      Your email:
+      <input type="email" name="email" required class="p-2 rounded text-sky-800 w-full" placeholder="Enter your email">
+    </label>
+    <label class="w-full max-w-md mb-4">
+      Your message:
+      <textarea name="message" required class="p-2 rounded text-sky-800 w-full" placeholder="Enter your message"></textarea>
+    </label>
+    <!-- Your other form fields go here -->
+    <button type="submit" class="bg-sky-700 hover:bg-sky-800 cursor-pointer text-white font-bold py-2 px-4 rounded">Send</button>
+  </form>
+</div>
+
+<!-- JavaScript for Scroll -->
+<script>
+  function scrollLeft() {
+    document.getElementById('product-carousel').scrollBy({ left: -240, behavior: 'smooth' });
+  }
+
+  function scrollRight() {
+    document.getElementById('product-carousel').scrollBy({ left: 240, behavior: 'smooth' });
+  }
+</script>
+
+<!-- Custom CSS for Scrollbar -->
+<style>
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>

@@ -1,0 +1,83 @@
+<div class="container mx-auto px-4 py-8" data-cart-secret-id="<%= @current_cart.secret_id %>">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+        <h1 class="text-2xl font-bold my-4">Shopping Cart</h1>
+        <%# <button id="checkout-btn" class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded">
+            Checkout
+        </button> %>
+    </div>
+    <div class="mt-8">
+        <% @current_cart.products.each do |product| %>
+        <div class="flex flex-col md:flex-row border-b border-gray-400 py-4" data-product-id="<%= product.id %>" data-product-price="<%= product.price %>">
+            <div class="flex flex-row items-center md:flex-grow">
+                <div class="flex-shrink-0 w-24 h-24">
+                    <%= image_tag product.images.first, class: "w-full h-full object-cover" if product.images.any? %>
+                </div>
+                <div class="mt-4 md:mt-0 md:ml-6 flex-grow">
+                    <h2 class="text-lg font-bold"><%= link_to product.name, product_path(product) %></h2>
+                    <p class="mt-2 text-gray-600">Product Description</p>
+                </div>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-col md:flex-row items-center justify-between w-full">
+                <div class="flex items-center">
+                    <span class="mr-2 text-gray-600">Quantity:</span>
+                    <div class="flex items-center">
+                        <button class="bg-gray-200 rounded-l-lg px-2 py-1 quantity-decrease" data-product-id="<%= product.id %>" data-action="decrease">-</button>
+                        <span class="mx-2 text-gray-600 quantity-value" data-product-id="<%= product.id %>"><%= @current_cart.cart_items.find_by(product: product).quantity %></span>
+                        <button class="bg-gray-200 rounded-r-lg px-2 py-1 quantity-increase" data-product-id="<%= product.id %>" data-action="increase">+</button>
+                    </div>
+                </div>
+                <span class="font-bold mt-2 md:mt-0 price" data-product-id="<%= product.id %>">Ksh <%= @current_cart.cart_items.find_by(product: product).quantity * product.price %></span>
+                <%= link_to "Remove", cart_path(@current_cart.secret_id, product_id: product.id), class: "font-medium text-red-600 hover:text-red-800 ml-4 mt-2 md:mt-0", data: { turbo_method: "delete" } %>
+            </div>
+        </div>
+        <% end %>
+    </div>
+    <div class="flex justify-end items-center mt-8">
+        <span class="text-gray-600 mr-4">Subtotal:</span>
+        <span id="subtotal" class="text-xl font-bold">Ksh <%= @current_cart.cart_items.sum { |item| item.quantity * item.product.price } %></span>
+    </div>
+      <button class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded w-full">
+        <%= link_to "Checkout via WhatsApp", "whatsapp://send?phone=+254795029654&text=Checkout%20Details:%0A#{CGI.escape(@current_cart.cart_items.map { |item| "#{item.product.name}: #{item.quantity} x #{item.product.price} = #{item.quantity * item.product.price}" }.join("%0A"))}", class: "text-white" %>
+      </button>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.quantity-decrease').forEach(button => {
+      button.addEventListener('click', () => {
+        updateQuantity(button.dataset.productId, -1);
+      });
+    });
+
+    document.querySelectorAll('.quantity-increase').forEach(button => {
+      button.addEventListener('click', () => {
+        updateQuantity(button.dataset.productId, 1);
+      });
+    });
+
+    function updateQuantity(productId, change) {
+      const quantityElement = document.querySelector(`.quantity-value[data-product-id="${productId}"]`);
+      const priceElement = document.querySelector(`.price[data-product-id="${productId}"]`);
+      let quantity = parseInt(quantityElement.textContent);
+      quantity += change;
+      if (quantity < 1) quantity = 1;
+      quantityElement.textContent = quantity;
+
+      const secretId = document.querySelector('[data-cart-secret-id]').dataset.cartSecretId;
+
+      fetch(`/carts/update_quantity`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ product_id: productId, quantity: quantity, secret_id: secretId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        priceElement.textContent = `Ksh ${data.total_price}`;
+        document.getElementById('subtotal').textContent = `Ksh ${data.subtotal}`;
+      });
+    }
+  });
+</script>
