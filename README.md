@@ -26,9 +26,9 @@
 - [❓ FAQ (OPTIONAL)](#faq)
 - [📝 License](#license)
 
-# 📖 Fast Recipes <a name="about-project"></a>
+# 📖 Gems Of Insight Ecommerce <a name="about-project"></a>
 
-"This **recipe app** allows users to create, share, and manage their favorite recipes, with a focus on ingredient management and user-friendly navigation. It's a platform for home cooks and food enthusiasts to discover new dishes and connect with others who share their passion for cooking."
+
 
 
 
