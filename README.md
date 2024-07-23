@@ -70,6 +70,17 @@ Clone this repository to your desired folder:
 
 ### Install
 
+Make sure you have:
+
+- Ruby version 3.3.0
+
+- Configuration Add your env variables to the config/credentials.yml.enc file. You can do this by running bin/rails credentials:edit
+
+- Database creation, we use postgresql as our database.
+
+- Database initialization run ```bin/rails db:migrate``` to create the tables
+
+
 ### Usage
 
 - bin/rails server (to run web application) or bin/dev
