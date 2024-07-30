@@ -1,3 +1,7 @@
+<% resource_name = :admin %>
+<% resource = Admin.new %>
+<% devise_mapping = Devise.mappings[:admin] %>
+
 <%- if controller_name != 'sessions' %>
   <%= link_to "Log in", new_session_path(resource_name) %>
 <% end %>
