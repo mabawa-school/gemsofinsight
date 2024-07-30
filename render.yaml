@@ -1,18 +1,23 @@
 databases:
-  - name: mysite
-    databaseName: mysite
-    user: mysite
+  - name: pods
+    databaseName: pods_4oel
+    user: pods_4oel_user
+    plan: free
 
 services:
   - type: web
-    name: mysite
+    name: podcasts-backend
     runtime: ruby
+    plan: free
     buildCommand: "./bin/render-build.sh"
-    startCommand: "bundle exec puma -C config/puma.rb"
+    # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
+    startCommand: "bundle exec rails server"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: mysite
+          name: pods_4oel
           property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
+      - key: WEB_CONCURRENCY
+        value: 2 # sensible default
